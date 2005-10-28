@@ -1,0 +1,8 @@
+% my $Title = loc("Queue Rights");
+<& /Elements/Header, Title=>$Title &>
+<& /Admin/Elements/ToolTabs,
+    current_tab => 'Admin/Tools/RightsMatrix/',
+    current_subtab => 'Admin/Tools/RightsMatrix/QueueRightsMatrix.html',
+    Title=>$Title &>
+
+<& /Admin/Tools/RightsMatrix/Elements/QueueRightsMatrix, %ARGS  &>

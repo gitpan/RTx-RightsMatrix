@@ -1,0 +1,8 @@
+% my $Title = loc("Ticket Custom Field Rights Matrix");
+<& /Elements/Header, Title=>$Title &>
+<& /Admin/Tools/RightsMatrix/Elements/UserRightsTabs,
+    current_tab => 'User/Prefs.html',
+    current_subtab => 'Admin/Tools/RightsMatrix/User/QueueCFRightsMatrix.html',
+    Title=>$Title &>
+
+<& /Admin/Tools/RightsMatrix/Elements/QueueCFRightsMatrix, %ARGS &>

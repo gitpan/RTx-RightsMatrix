@@ -1,0 +1,63 @@
+
+<& /Elements/ListActions, actions => \@results &>
+
+<& /Admin/Tools/RightsMatrix/Elements/CustomFieldRightsMatrix, ObjectType => 'RT::Queue', LookupType => 'RT::Queue-RT::Ticket', ObjectRights => \%q_rights, PrincipalObj => $principal, %ARGS &>
+
+<h3>Queue Key:</h3>
+For a queue the possible permissions are:
+<table border="1">
+% foreach (keys %q_rights) {
+<tr>
+<td><%$_%></td><td><%$q_rights{$_}{RIGHT}%></td><td><%$q_rights{$_}{DESC}%></td>
+</tr>
+% }
+</table>
+<p>
+
+<%INIT>
+
+my $principal;
+my @results;
+
+if ($ARGS{Principal} =~ /^\d+$/) {
+    $principal = RT::Principal->new($session{CurrentUser});
+    my ($rv, $msg) = $principal->Load($ARGS{Principal});
+    if (! $rv) {
+        $m->comp("/Elements/Error", Why => loc("Principal not found"));
+        $m->abort;
+    }
+}
+elsif ($ARGS{Principal} =~ /^(.*)-Role$/) {
+    $principal = RTx::RightsMatrix::RolePrincipal->new($1);
+}
+elsif ($ARGS{User}) {
+    my $user = RT::User->new($session{CurrentUser});
+    my ($rv, $msg) = $user->Load($ARGS{User});
+    if (! $rv) {
+        $m->comp("/Elements/Error", Why => loc("User [_1] not found: [_2]", $ARGS{User}, $msg));
+        $m->abort;
+    }
+    $principal = $user->PrincipalObj;
+}
+else {
+    $principal = $session{CurrentUser}->PrincipalObj;
+}
+
+
+</%INIT>
+<%ARGS>
+$User => undef
+$Edit => 0
+$Principal => 0
+$Intersect => 0
+</%ARGS>
+<%ONCE>
+my %q_rights = (
+                  'q' => { RIGHT => 'SeeQueue',    DESC =>'Can see that queue' },
+                  'r' => { RIGHT => 'ShowTicket',    DESC =>'Can see tickets in that queue' },
+                  'w' => { RIGHT => 'ModifyTicket', DESC =>'Can edit/modify tickets in that queue' },
+                  'c' => { RIGHT => 'CreateTicket',  DESC =>'Can create tickets in that queue' },
+                  'd' => { RIGHT => 'DeleteTicket',  DESC =>'Can delete tickets in that queue' },
+                 );
+
+</%ONCE>

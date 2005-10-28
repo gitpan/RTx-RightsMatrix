@@ -1,0 +1,9 @@
+% my $Title = loc("Custom Field Rights Matrix");
+<& /Elements/Header, Title=>$Title &>
+<& /Admin/Elements/ToolTabs,
+    current_tab => 'Admin/Tools/RightsMatrix/',
+    current_subtab => 'Admin/Tools/RightsMatrix/AssetCFRightsMatrix.html',
+    Title=>$Title &>
+
+<& /Admin/Tools/RightsMatrix/Elements/AssetCFRightsMatrix, %ARGS &>
+
