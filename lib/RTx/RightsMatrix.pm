@@ -25,7 +25,7 @@ L<svn://svn.chaka.net/RTx-RightsMatrix>
 
 =cut
 
-our $VERSION = '0.01_02';
+our $VERSION = '0.01_03';
 
 {
     no warnings qw(redefine);

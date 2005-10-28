@@ -38,11 +38,11 @@
     <i>Global</i>
 % }
     </b>
-<br>(
+<br>
 % foreach my $right (keys %$ObjectRights) {
   <% $Super || $principal->HasRight(Object => $ObjectSystem, Right => $ObjectRights->{$right}{RIGHT})     ? $right : '&nbsp;' |n %>
 % }
-     )</td>
+     </td>
 </tr>
 
 % my $i;
@@ -61,7 +61,7 @@
   </td>
 %#  <td><% $cf->Description %> </td>
 %# All Rights
-  <td>
+  <td align="center">
 %  foreach (qw(r w a)) {
 %    my $has_right = $GlobalRight{$cf_rights{$_}{RIGHT}}
 %                 or $principal->HasRight(Object => $cf, Right => $cf_rights{$_}{RIGHT});
@@ -70,7 +70,7 @@
 %  }
   </td>
 %# Direct Rights
-  <td>
+  <td align="center">
 %  if ($ARGS{Principal} !~ /Role/) {
 %  foreach (qw(r w a)) {
 %    my $has_right = $principal->_HasDirectRight(Object => $cf, Right => $cf_rights{$_}{RIGHT});
@@ -107,7 +107,7 @@
             <input type="hidden" name="cf-<%$cf->Id%>-object-<%$object->Id%>-magic" value="1">
 %         }
 %         else {
-           <b>Y</b> 
+           A 
 %         }
         </td>
 %      }
@@ -135,7 +135,7 @@
             <input type="hidden" name="cf-<%$cf->Id%>-object-0-magic" value="1">
 %         }
 %         else {
-           <b>Y</b> 
+           A 
 %         }
         </td>
 %      }
@@ -186,7 +186,7 @@ For a custom field the possible permissions are:
 </table>
 <p>
 
-A <b>Y</b> in the table means that custom field applies for that object.
+An <b>A</b> in the table means that custom field applies for that object.
 
 </FORM>
 
@@ -315,6 +315,24 @@ $objects->UnLimit;
 my @objects = @{ $objects->ItemsArrayRef };
 $m->comp('/Elements/Callback', _CallbackName => $ObjectString.'Sort', objects => \@objects);
 
+my $WhereFrom = sub {
+
+    my %args = @_;
+
+    my @callers = $m->callers();
+    my $user_context = ( grep { $_->dir_path() =~ /User/ } @callers ) ? 'User/' : '';
+
+    #return    "$RT::WebURL/Admin/Tools/RightsMatrix/${user_context}${ObjectString}CFRightsMatrix.html?"
+    return    "?"
+            . "WhereFrom=1"
+            . "&PrincipalId=" . $args{Principal}->id
+            . "&ObjectId="    . $args{Object}->id
+            . "&ObjectType="  . ref($args{Object})
+            . "&Right="       . $args{Right}
+            ;
+};
+
+
 </%INIT>
 <%ARGS>
 $User => undef
@@ -347,18 +365,5 @@ my %cf_rights = (
                   'a' => { RIGHT => 'AdminCustomField',  DESC =>'Can administer that custom field' },
                   'm' => { RIGHT => 'ModifyACL',         DESC =>'Can modify the access control list for that custom field' },
                  );
-
-my $WhereFrom = sub {
-
-    my %args = @_;
-
-    return    "$RT::WebURL/Admin/Global/QueueRightsMatrix.html?"
-            . "WhereFrom=1"
-            . "&PrincipalId=" . $args{Principal}->id
-            . "&ObjectId="    . $args{Object}->id
-            . "&ObjectType="  . ref($args{Object})
-            . "&Right="       . $args{Right}
-            ;
-};
 
 </%ONCE>
