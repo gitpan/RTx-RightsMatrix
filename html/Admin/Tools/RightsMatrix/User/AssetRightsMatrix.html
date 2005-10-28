@@ -1,4 +1,4 @@
-% my $Title = loc("Asset Type Rights");
+% my $Title = loc("Queue Rights for [_1]: [_2]", $principal->IsUser ? loc('User') : loc('Group'), $principal->Object->Name ? $principal->Object->Name : $principal->Object->Type);
 <& /Elements/Header, Title=>$Title &>
 <& /Admin/Tools/RightsMatrix/Elements/UserRightsTabs,
     current_tab => 'User/Prefs.html',
@@ -6,3 +6,6 @@
     Title=>$Title &>
 
 <& /Admin/Tools/RightsMatrix/Elements/AssetRightsMatrix, %ARGS  &>
+<%INIT>
+my ($principal) = RTx::RightsMatrix::Util::get_principal( Principal => $ARGS{Principal}, User => $ARGS{User}, CurrentUser => $session{CurrentUser} );
+</%INIT>

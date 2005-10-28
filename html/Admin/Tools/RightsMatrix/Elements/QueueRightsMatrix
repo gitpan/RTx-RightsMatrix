@@ -4,7 +4,6 @@
 
 <%INIT>
 my @results;
-my $principal;
 
 if ( $ARGS{WhereFrom} ) {
         $m->comp("../WhereRightComesFrom.html", %ARGS);
@@ -16,28 +15,10 @@ if ( $ARGS{Principal} and $ARGS{User} ) {
         $m->abort;
 }
 
-if ($ARGS{Principal} =~ /^\d+$/) {
-    $principal = RT::Principal->new($session{CurrentUser});
-    my ($rv, $msg) = $principal->Load($ARGS{Principal});
-    if (! $rv) {
-        $m->comp("/Elements/Error", Why => loc("Principal not found"));
+my ($principal, $msg) = RTx::RightsMatrix::Util::get_principal( Principal => $ARGS{Principal}, User => $ARGS{User}, CurrentUser => $session{CurrentUser} );
+unless (ref $principal) {
+        $m->comp("/Elements/Error", Why => loc($msg));
         $m->abort;
-    }
-}
-elsif ($ARGS{Principal} =~ /^(.*)-Role$/) {
-    $principal = RTx::RightsMatrix::RolePrincipal->new($1);
-}
-elsif ($ARGS{User}) {
-    my $user = RT::User->new($session{CurrentUser});
-    my ($rv, $msg) = $user->Load($ARGS{User});
-    if (! $rv) {
-        $m->comp("/Elements/Error", Why => loc("User [_1] not found: [_2]", $ARGS{User}, $msg));
-        $m->abort;
-    }
-    $principal = $user->PrincipalObj;
-}
-else {
-    $principal = $session{CurrentUser}->PrincipalObj;
 }
 
 </%INIT>
@@ -46,7 +27,5 @@ $User => undef
 $Edit => 0
 </%ARGS>
 <%ONCE>
-use RTx::RightsMatrix;
-use RTx::RightsMatrix::RolePrincipal;
-
+use RTx::RightsMatrix::Util;
 </%ONCE>

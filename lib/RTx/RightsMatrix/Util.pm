@@ -3,6 +3,7 @@ package RTx::RightsMatrix::Util;
 use strict;
 
 use RT::Groups;
+use RTx::RightsMatrix::RolePrincipal;
 
 =head1 NAME
 
@@ -287,6 +288,37 @@ sub reduce_list {
     }
 
     return [ reverse @result ];
+}
+
+sub get_principal {
+
+    my %args = @_;
+    my $principal;
+
+    if ($args{Principal} =~ /^\d+$/) {
+        $principal = RT::Principal->new($args{CurrentUser});
+        my ($rv, $msg) = $principal->Load($args{Principal});
+        if (! $rv) {
+            return( undef, "Principal not found");
+        }
+    }
+    elsif ($args{Principal} =~ /^(.*)-Role$/) {
+        $principal = RTx::RightsMatrix::RolePrincipal->new($1);
+    }
+    elsif ($args{User}) {
+        my $user = RT::User->new($args{CurrentUser});
+        my ($rv, $msg) = $user->Load($args{User});
+        if (! $rv) {
+            return( undef, loc("User [_1] not found: [_2]", $args{User}, $msg) );
+        }
+        $principal = $user->PrincipalObj;
+    }
+    else {
+        $principal = $args{CurrentUser}->PrincipalObj;
+    }
+
+    return $principal, "Principal found";
+
 }
 
 1;
