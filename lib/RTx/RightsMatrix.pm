@@ -3,6 +3,8 @@ package RTx::RightsMatrix;
 use strict;
 use Data::Dumper;
 use Storable;
+use RTx::RightsMatrix::Util;
+use RTx::RightsMatrix::RolePrincipal;
 
 =head1 NAME
 
@@ -25,7 +27,7 @@ L<svn://svn.chaka.net/RTx-RightsMatrix>
 
 =cut
 
-our $VERSION = '0.01_03';
+our $VERSION = '0.01_08';
 
 {
     no warnings qw(redefine);

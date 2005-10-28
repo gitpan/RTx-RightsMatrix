@@ -7,5 +7,6 @@
 
 <& /Admin/Tools/RightsMatrix/Elements/QueueRightsMatrix, %ARGS  &>
 <%INIT>
+use RTx::RightsMatrix::Util;
 my ($principal) = RTx::RightsMatrix::Util::get_principal( Principal => $ARGS{Principal}, User => $ARGS{User}, CurrentUser => $session{CurrentUser} );
 </%INIT>
