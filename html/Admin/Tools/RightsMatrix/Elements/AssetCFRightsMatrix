@@ -34,7 +34,7 @@ $Intersect => 0
 <%ONCE>
 use RTx::RightsMatrix::Util;
 my %a_rights = (
-                  'q' => { RIGHT => 'SeeType',    DESC =>'Can see that asset type' },
+                  's' => { RIGHT => 'SeeType',    DESC =>'Can see that asset type' },
                   'r' => { RIGHT => 'ShowAsset',    DESC =>'Can see assets of that type' },
                   'w' => { RIGHT => 'ModifyAsset', DESC =>'Can edit/modify assets of that type' },
                   'c' => { RIGHT => 'CreateAsset',  DESC =>'Can create assets of that type' },

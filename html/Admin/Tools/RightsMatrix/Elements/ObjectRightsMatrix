@@ -16,17 +16,17 @@
 <td>Name</td>
 % foreach my $object ( @objects ) {
 <td>
-  <table cellspacing="0"><tr><td><tr><td align="center" colspan="2"><b>
+  <table cellspacing="0" border="0"><tr><td><tr><td align="center" colspan="2"><b>
 %   $EquivObjects = ref($ObjectSystem) eq 'RT::System' ? [] : [ $ObjectSystem ]; # RT bug workaround
 %   if ( $Super or $session{CurrentUser}->HasRight(Right => 'Admin'.$ObjectString, Object => $object, EquivObjects => $EquivObjects) ) {
-      <a href="<%$RT::WebPath%>/Admin/Queues/Modify.html?id=<%$object->id%>"><% $object->Name %></a>
+      <a href="<%$RT::WebPath%>/Admin/<%$ObjectString%>s/Modify.html?id=<%$object->id%>"><% $object->Name %></a>
 %   }
 %   else {
     <% $object->Name %>
 %   }
     </b>
   </td></tr>
-  <tr><td width="50%" align="center">All</td><td align="center">Direct</td></tr>
+  <tr><td width="50%" align="center">All</td><td width="50%" align="center">Direct</td></tr>
   </table>
 </td>
 % }
@@ -41,7 +41,7 @@
 % }
     </b>
   </td></tr>
-  <tr><td width="50%" align="center">All</td><td>Direct</td></tr>
+  <tr><td width="50%" align="center">All</td><td width="50%" align="center">Direct</td></tr>
   </table>
 </td>
 </tr>
@@ -143,6 +143,9 @@ if ( $ARGS{Principal} and $ARGS{User} ) {
 my $objects = "${ObjectType}s"->new($session{CurrentUser});
 $objects->UnLimit;
 $objects->Limit(FIELD => 'id', OPERATOR => '>', VALUE => 0);
+if ($FilterField and $FilterValue) {
+    $objects->Limit(FIELD => $FilterField, OPERATOR => $FilterOp, VALUE => $FilterValue);
+}
 my @objects = @{ $objects->ItemsArrayRef };
 $m->comp('/Elements/Callback', _CallbackName => $ObjectString.'Sort', objects => \@objects);
 
@@ -233,7 +236,7 @@ my $WhereFrom = sub {
     my @callers = $m->callers();
     my $user_context = ( grep { $_->dir_path() =~ /User/ } @callers ) ? 'User/' : '';
 
-    return    "$RT::WebURL/Admin/Tools/RightsMatrix/${user_context}QueueRightsMatrix.html?"
+    return    "$RT::WebURL/Admin/Tools/RightsMatrix/${user_context}${ObjectString}RightsMatrix.html?"
             . "WhereFrom=1"
             . "&PrincipalId=" . $args{Principal}->id
             . "&ObjectId="    . $args{Object}->id
@@ -249,6 +252,9 @@ $PrincipalObj
 $ObjectType
 $ObjectSystem => $RT::System
 $SystemRights => $RT::System::RIGHTS
+$FilterField => undef
+$FilterValue => undef
+$FilterOp => '='
 </%ARGS>
 <%ONCE>
 use RTx::RightsMatrix;
