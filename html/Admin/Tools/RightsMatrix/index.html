@@ -86,7 +86,7 @@ my $tabs = {
     },
 };
 
-delete $tabs->{C} unless defined $RTx::AssetTracker::VERSION;
+delete $tabs->{CC} unless defined $RTx::AssetTracker::VERSION;
 delete $tabs->{D} unless defined $RTx::AssetTracker::VERSION;
 
 $m->comp('/Elements/Callback', tabs => $tabs, %ARGS);

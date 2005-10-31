@@ -5,6 +5,7 @@ html/Admin/Tools/RightsMatrix/AssetRightsMatrix.html
 html/Admin/Tools/RightsMatrix/Elements/AssetCFRightsMatrix
 html/Admin/Tools/RightsMatrix/Elements/AssetRightsMatrix
 html/Admin/Tools/RightsMatrix/Elements/CustomFieldRightsMatrix
+html/Admin/Tools/RightsMatrix/Elements/GroupRightsMatrix
 html/Admin/Tools/RightsMatrix/Elements/IllustrateACE
 html/Admin/Tools/RightsMatrix/Elements/ObjectRightsMatrix
 html/Admin/Tools/RightsMatrix/Elements/QueueCFRightsMatrix
@@ -12,6 +13,7 @@ html/Admin/Tools/RightsMatrix/Elements/QueueRightsMatrix
 html/Admin/Tools/RightsMatrix/Elements/RightsMatrixTabs
 html/Admin/Tools/RightsMatrix/Elements/SelectPrincipalForRightsMatrix
 html/Admin/Tools/RightsMatrix/Elements/UserRightsTabs
+html/Admin/Tools/RightsMatrix/GroupRightsMatrix.html
 html/Admin/Tools/RightsMatrix/index.html
 html/Admin/Tools/RightsMatrix/QueueCFRightsMatrix.html
 html/Admin/Tools/RightsMatrix/QueueRightsMatrix.html
