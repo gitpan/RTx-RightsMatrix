@@ -4,6 +4,7 @@
 <INPUT TYPE=HIDDEN NAME=Principal VALUE="<%$principal->Id%>">
 <INPUT TYPE=HIDDEN NAME=Save VALUE="1">
 <INPUT TYPE=HIDDEN NAME=Edit VALUE="1">
+<INPUT TYPE=HIDDEN NAME=EditApplies VALUE="1">
 
 <table border="1" cellspacing="0">
 <tr>
@@ -17,7 +18,7 @@
 <td>Direct Rights</td>
 % foreach my $object ( @objects ) {
 <td><b>
-% if ( $session{CurrentUser}->HasRight(Right => 'Admin'.$ObjectString, Object => $object) ) {
+% if ( $session{CurrentUser}->HasRight(Right => 'Admin'.$ObjectString, Object => $object, EquivObjects => $EquivObjects) ) {
       <a href="<%$RT::WebPath%>/Admin/<%$ObjectString%>s/Modify.html?id=<%$object->id%>"><% $object->Name %></a>
 % }
 % else {
@@ -26,12 +27,12 @@
     </b>
 <br>
 % foreach my $right (keys %$ObjectRights) {
-  <% $Super || $principal->HasRight(Object => $object, Right => $ObjectRights->{$right}{RIGHT})     ? $right : '&nbsp;' |n %>
+  <% $Super || $principal->HasRight(Object => $object, Right => $ObjectRights->{$right}{RIGHT}, EquivObjects => $EquivObjects)     ? $right : '&nbsp;' |n %>
 % }
 </td>
 % }
 <td><b>
-% if ( $session{CurrentUser}->HasRight(Right => 'Admin'.$ObjectString, Object => $RT::System) ) {
+% if ( $session{CurrentUser}->HasRight(Right => 'Admin'.$ObjectString, Object => $RT::System, EquivObjects => $EquivObjects) ) {
       <a href="<%$RT::WebPath%>/Admin/Global/index.html"><i>Global</i></a>
 % }
 % else {
@@ -40,7 +41,7 @@
     </b>
 <br>
 % foreach my $right (keys %$ObjectRights) {
-  <% $Super || $principal->HasRight(Object => $ObjectSystem, Right => $ObjectRights->{$right}{RIGHT})     ? $right : '&nbsp;' |n %>
+  <% $Super || $principal->HasRight(Object => $ObjectSystem, Right => $ObjectRights->{$right}{RIGHT}, EquivObjects => $EquivObjects)     ? $right : '&nbsp;' |n %>
 % }
      </td>
 </tr>
@@ -63,8 +64,8 @@
 %# All Rights
   <td align="center">
 %  foreach (qw(r w a)) {
-%    my $has_right = $GlobalRight{$cf_rights{$_}{RIGHT}}
-%                 or $principal->HasRight(Object => $cf, Right => $cf_rights{$_}{RIGHT});
+%    my $has_right = $Super || $GlobalRight{$cf_rights{$_}{RIGHT}} || $principal->HasRight(Object => $cf, Right => $cf_rights{$_}{RIGHT});
+% $RT::Logger->debug("Principal " . $principal->Object->Name . " Object ". ref($cf) . " " . $cf->id . " Right " . $cf_rights{$_}{RIGHT} . " has right: $has_right");
 %    my $url = $WhereFrom->(Principal => $principal, Object => $cf, Right => $cf_rights{$_}{RIGHT});
           <a href="<% $url %>"><% $has_right ? $_ : '' %></a><br>
 %  }
@@ -102,7 +103,7 @@
 %      $ocfs->Limit( FIELD => 'ObjectId', VALUE => $object->Id );
 %      if ($ocfs->Count) {
         <td align="center">
-%         if ($ARGS{Edit} and $object->CurrentUserHasRight('AssignCustomFields')) {
+%         if ($ARGS{EditApplies} and $object->CurrentUserHasRight('AssignCustomFields')) {
             <input type="checkbox" name="cf-<%$cf->Id%>-object-<%$object->Id%>" value="1" checked=1">
             <input type="hidden" name="cf-<%$cf->Id%>-object-<%$object->Id%>-magic" value="1">
 %         }
@@ -113,7 +114,7 @@
 %      }
 %      else {
          <td align="center">
-%         if ($ARGS{Edit} and $object->CurrentUserHasRight('AssignCustomFields')) {
+%         if ($ARGS{EditApplies} and $object->CurrentUserHasRight('AssignCustomFields')) {
             <input type="checkbox" name="cf-<%$cf->Id%>-object-<%$object->Id%>" value="1">
             <input type="hidden" name="cf-<%$cf->Id%>-object-<%$object->Id%>-magic" value="1">
 %         }
@@ -130,7 +131,7 @@
 %      $ocfs->Limit( FIELD => 'ObjectId', VALUE => 0 );
 %      if ($ocfs->Count) {
         <td align="center">
-%         if ($ARGS{Edit} and $session{CurrentUser}->HasRight(Right => 'AssignCustomFields', Object => $RT::System)) {
+%         if ($ARGS{EditApplies} and $session{CurrentUser}->HasRight(Right => 'AssignCustomFields', Object => $RT::System)) {
             <input type="checkbox" name="cf-<%$cf->Id%>-object-0" value="1" checked=1>
             <input type="hidden" name="cf-<%$cf->Id%>-object-0-magic" value="1">
 %         }
@@ -141,7 +142,7 @@
 %      }
 %      else {
          <td align="center">
-%         if ($ARGS{Edit} and $session{CurrentUser}->HasRight(Right => 'AssignCustomFields', Object => $RT::System)) {
+%         if ($ARGS{EditApplies} and $session{CurrentUser}->HasRight(Right => 'AssignCustomFields', Object => $RT::System)) {
             <input type="checkbox" name="cf-<%$cf->Id%>-object-0" value="1">
             <input type="hidden" name="cf-<%$cf->Id%>-object-0-magic" value="1">
 %         }
@@ -155,9 +156,13 @@
 % }
 </table>
 
+<p>
+<b>Note:</b> click on any of the bold rights keys under 'All Rights' to see exactly how that user/group/role has received that right.
+</p>
+
 %#<& /Elements/TitleBoxEnd &>
 
-%if ($ARGS{Edit}) {
+%if ($ARGS{Edit} or $ARGS{EditApplies}) {
 <& /Elements/Submit, Label => loc("Save Changes"), Caption => "For user/group being viewed", Reset => 1 &>
 %}
 </FORM>
@@ -168,7 +173,8 @@ Select User or Group: <& /Admin/Tools/RightsMatrix/Elements/SelectPrincipalForRi
 % if ($session{CurrentUser}->HasRight(Right => 'AdminUsers', Object => $RT::System)) {
 - or -
 Enter username: <INPUT NAME="User" VALUE="<%$ARGS{User}%>">
-Edit mode: <input type="checkbox" name="Edit"  <%$ARGS{Edit} ? 'CHECKED=1' : ''%> value='1' >
+Edit rights: <input type="checkbox" name="Edit"  <%$ARGS{Edit} ? 'CHECKED=1' : ''%> value='1' >
+Edit custom field assignments: <input type="checkbox" name="EditApplies"  <%$ARGS{EditApplies} ? 'CHECKED=1' : ''%> value='1' >
 %# <br><input type="checkbox" name="Intersect"  <%$ARGS{Intersect} ? 'CHECKED=1' : ''%> value='1' > Show intersection of object and custom field rights.
 % }
 <& /Elements/TitleBoxEnd &>
@@ -206,6 +212,9 @@ if ( $ARGS{Principal} and $ARGS{User} ) {
 }
 
 my $principal = $PrincipalObj;
+
+my $EquivObjects = ref($ObjectSystem) eq 'RT::System' ? [] : [ $ObjectSystem ];
+my $Super = $principal->HasRight(Right => 'SuperUser', Object => $RT::System, EquivObjects => $EquivObjects);
 
 # process custom field edits
 if ($ARGS{Save}) {
@@ -299,7 +308,6 @@ if ($ARGS{Save}) {
     }
 }
 
-my $Super = $principal->HasRight(Right => 'SuperUser', Object => $RT::System);
 my %GlobalRight;
 foreach my $right (keys %cf_rights) {
     $GlobalRight{$cf_rights{$right}{RIGHT}} = $principal->HasRight(Right => $cf_rights{$right}{RIGHT}, Object => $RT::System);

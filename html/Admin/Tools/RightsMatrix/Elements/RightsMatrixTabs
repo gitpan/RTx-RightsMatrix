@@ -57,7 +57,7 @@ $tabs->{"B"} = { title     => loc('Ticket CF Rights'),
                  path  => "Admin/Global/QueueCFRightsMatrix.html" };
 if (defined $RTx::AssetTracker::VERSION ) {
 $tabs->{"C"} = { title => loc('Asset Type Rights'),
-                 path  => "Admin/Global/AssetRightsMatrix.html" };
+                 path  => "Admin/Global/TypeRightsMatrix.html" };
 $tabs->{"D"} = { title     => loc('Asset CF Rights'),
                  path  => "Admin/Global/AssetCFRightsMatrix.html" };
 }

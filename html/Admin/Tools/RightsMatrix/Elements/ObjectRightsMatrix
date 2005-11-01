@@ -108,6 +108,10 @@
 % }
 </table>
 
+<p>
+<b>Note:</b> click on any <b>Y</b> under 'All' to see exactly how that user/group/role has received that right.
+</p>
+
 %#<& /Elements/TitleBoxEnd &>
 
 %if ($ARGS{Edit}) {

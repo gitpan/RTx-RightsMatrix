@@ -1,7 +1,6 @@
 Build.PL
 Changes
 html/Admin/Tools/RightsMatrix/AssetCFRightsMatrix.html
-html/Admin/Tools/RightsMatrix/AssetRightsMatrix.html
 html/Admin/Tools/RightsMatrix/Elements/AssetCFRightsMatrix
 html/Admin/Tools/RightsMatrix/Elements/AssetRightsMatrix
 html/Admin/Tools/RightsMatrix/Elements/CustomFieldRightsMatrix
@@ -17,11 +16,12 @@ html/Admin/Tools/RightsMatrix/GroupRightsMatrix.html
 html/Admin/Tools/RightsMatrix/index.html
 html/Admin/Tools/RightsMatrix/QueueCFRightsMatrix.html
 html/Admin/Tools/RightsMatrix/QueueRightsMatrix.html
+html/Admin/Tools/RightsMatrix/TypeRightsMatrix.html
 html/Admin/Tools/RightsMatrix/User/AssetCFRightsMatrix.html
-html/Admin/Tools/RightsMatrix/User/AssetRightsMatrix.html
 html/Admin/Tools/RightsMatrix/User/index.html
 html/Admin/Tools/RightsMatrix/User/QueueCFRightsMatrix.html
 html/Admin/Tools/RightsMatrix/User/QueueRightsMatrix.html
+html/Admin/Tools/RightsMatrix/User/TypeRightsMatrix.html
 html/Admin/Tools/RightsMatrix/WhereRightComesFrom.html
 html/Callbacks/RTx-RightsMatrix/Admin/Elements/ToolTabs/Default
 html/Callbacks/RTx-RightsMatrix/User/Elements/Tabs/Default
