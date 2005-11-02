@@ -2,8 +2,9 @@
 
 use lib qw(/opt/rt3/local/lib /opt/rt3/lib);
 
-use Test::More tests => 25;
+use Test::More tests => 37;
 use strict;
+BEGIN { require "t/utils.pl"; }
 use RT;
 use RTx::RightsMatrix;
 use RTx::RightsMatrix::Util;
@@ -87,4 +88,4 @@ ok($queue->id, "Queue loaded");
 $group->LoadSystemRoleGroup('AdminCc');
 ok($group->id, "Group loaded");
 $lol = RTx::RightsMatrix::Util::build_group_lists($group, 'RT::Queue', $queue->id);
-print RTx::RightsMatrix::Util::showme($lol);
+#print RTx::RightsMatrix::Util::showme($lol);

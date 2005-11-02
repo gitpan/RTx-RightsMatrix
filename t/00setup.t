@@ -2,8 +2,9 @@
 
 use lib qw(/opt/rt3/local/lib /opt/rt3/lib);
 
-use Test::More tests => 25;
+use Test::More tests => 178;
 use strict;
+BEGIN { require "t/utils.pl"; }
 use RT;
 
 # Load the config file

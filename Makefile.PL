@@ -12,6 +12,11 @@ build_requires		('Test::More');
 my ($lp) = $INC{'RT.pm'} =~ /^(.*)[\\\/]/;
 my $lib_path = join( ' ', "$RT::LocalPath/lib", $lp );
 
+substitute( { RT_LIB_PATH => $lib_path,
+	      RT_SBIN_PATH => $sbin_path,
+	    },
+	    qw(t/utils.pl)
+	  );
 
 &WriteAll;
 

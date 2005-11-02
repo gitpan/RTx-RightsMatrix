@@ -2,8 +2,9 @@
 
 use lib qw(/opt/rt3/local/lib /opt/rt3/lib);
 
-use Test::More tests => 25;
+use Test::More tests => 28;
 use strict;
+BEGIN { require "t/utils.pl"; }
 use RT;
 use RTx::RightsMatrix;
 use RTx::RightsMatrix::Util;
@@ -66,7 +67,8 @@ $user->Load('power_user');
 my $Principal = $user->PrincipalObj;
 
 is(check_acl_length('SuperUser', 'RT::System', 'Task', $Principal), 2, "Number of ACEs OK");
-is(check_acl_length('SeeQueue' ,  'RT::Queue', 'Task', $Principal), 4, "Number of ACEs OK");
+# direct, member of god_group, member of security_admins(recursively)
+is(check_acl_length('SeeQueue' ,  'RT::Queue', 'Task', $Principal), 3, "Number of ACEs OK");
 
 $group->LoadUserDefinedGroup('god_group');
 is(check_acl_length('SeeQueue' ,  'RT::Queue', 'Task', $group->PrincipalObj), 1, "Number of ACEs OK");
