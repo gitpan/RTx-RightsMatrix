@@ -8,5 +8,5 @@
 <& /Admin/Tools/RightsMatrix/Elements/AssetRightsMatrix, %ARGS  &>
 <%INIT>
 use RTx::RightsMatrix::Util;
-my ($principal) = RTx::RightsMatrix::Util::get_principal( Principal => $ARGS{Principal}, User => $ARGS{User}, CurrentUser => $session{CurrentUser} );
+my ($principal) = RTx::RightsMatrix::Util::get_principal( Principal => $ARGS{Principal} || $ARGS{PrincipalId}, User => $ARGS{User}, CurrentUser => $session{CurrentUser} );
 </%INIT>

@@ -39,7 +39,6 @@ inc/Module/Install/WriteAll.pm
 lib/RTx/RightsMatrix.pm
 lib/RTx/RightsMatrix/RolePrincipal.pm
 lib/RTx/RightsMatrix/Util.pm
-Makefile.old
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP

@@ -1,5 +1,18 @@
-Revision history for RTx-RightsMatrix
+Changes:
 
-0.01    Date/time
-        First version, released on an unsuspecting world.
+0.02.04:
+
+* Going through Configuration menu no longer defaults to root.
+* Fixed bug in setting title.
+
+0.02.03:
+
+* All tests pass
+* RTHOME honored for tests (thanks Howard Jones)
+
+previous:
+
+* Broken link fixed (thanks Ruslan)
+* Logic bug fixed (thanks Todd)
+* Two components were renamed
 

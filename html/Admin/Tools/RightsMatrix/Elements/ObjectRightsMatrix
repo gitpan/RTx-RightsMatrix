@@ -1,7 +1,8 @@
 
 <& /Elements/ListActions, actions => \@results &>
 
-<FORM METHOD=POST ENCTYPE="multipart/form-data">
+% if (!$PickUser) {
+<FORM METHOD=POST ACTION="<%$m->request_comp->name%>" ENCTYPE="multipart/form-data">
 <INPUT TYPE=HIDDEN NAME=Principal VALUE="<%$principal->Id%>">
 <INPUT TYPE=HIDDEN NAME=Save VALUE="1">
 <INPUT TYPE=HIDDEN NAME=Edit VALUE="1">
@@ -118,8 +119,9 @@
 <& /Elements/Submit, Label => loc("Save Changes"), Caption => "For user/group being viewed", Reset => 1 &>
 %}
 </FORM>
+% } # end PickUser
 
-<FORM METHOD=POST ENCTYPE="multipart/form-data">
+<FORM METHOD=POST ACTION="<%$m->request_comp->name%>" ENCTYPE="multipart/form-data">
 <INPUT TYPE=HIDDEN NAME=ObjectType VALUE="<%$ObjectType%>">
 <& /Elements/TitleBoxStart, title => loc('View rights for'),   color=> "#993333", width => "100%" &>
 Select User or Group: <& /Admin/Tools/RightsMatrix/Elements/SelectPrincipalForRightsMatrix, Principal => $ARGS{Principal}, System => $ObjectSystem &>
@@ -259,6 +261,7 @@ $SystemRights => $RT::System::RIGHTS
 $FilterField => undef
 $FilterValue => undef
 $FilterOp => '='
+$PickUser => 0
 </%ARGS>
 <%ONCE>
 use RTx::RightsMatrix;
