@@ -1,5 +1,9 @@
 Changes:
 
+0.02.05:
+
+* Fixed user needing ShowConfigTab to access My Rights
+
 0.02.04:
 
 * Going through Configuration menu no longer defaults to root.
