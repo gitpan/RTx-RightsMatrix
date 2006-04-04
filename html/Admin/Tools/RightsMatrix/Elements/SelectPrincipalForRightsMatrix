@@ -12,15 +12,23 @@
 <OPTION <%$ARGS{Principal} eq 'AdminCc-Role' ? 'SELECTED' : ''%> VALUE="AdminCc-Role"    >&nbsp;&nbsp;  AdminCc
 %    }
 %    elsif (ref($System) eq 'RTx::AssetTracker::System') {
+%        if ( %RTx::AssetTracker::Type::DEFAULT_ROLES ) {
+%#           AT configurable roles is supported
+%            foreach my $role ( RTx::AssetTracker::Type->ActiveRoleArray() ) {
+<OPTION <%$ARGS{Principal} eq "$role-Role" ? 'SELECTED' : ''%> VALUE="<%$role%>-Role"    >&nbsp;&nbsp;  <% $role %>
+%            }
+%        }
+%        else {
 <OPTION <%$ARGS{Principal} eq 'Owner-Role' ? 'SELECTED' : ''%> VALUE="Owner-Role"    >&nbsp;&nbsp;  Owner
 <OPTION <%$ARGS{Principal} eq 'Admin-Role' ? 'SELECTED' : ''%> VALUE="Admin-Role"    >&nbsp;&nbsp;  Admin
+%        }
 %    }
 % }
 % if ($IncludeSystemGroups) {
 <OPTION VALUE="">System Groups:
-<OPTION <%$ARGS{Principal} eq '3' ? 'SELECTED' : ''%> VALUE="3">&nbsp;&nbsp;  Everyone
-<OPTION <%$ARGS{Principal} eq '4' ? 'SELECTED' : ''%> VALUE="4">&nbsp;&nbsp;  Privileged Users
-<OPTION <%$ARGS{Principal} eq '5' ? 'SELECTED' : ''%> VALUE="5">&nbsp;&nbsp;  Unprivileged Users
+<OPTION <%$ARGS{Principal} eq $SysGroupID{Everyone} ? 'SELECTED' : ''%> VALUE="<%$SysGroupID{Everyone}%>">&nbsp;&nbsp;  Everyone
+<OPTION <%$ARGS{Principal} eq $SysGroupID{Privileged} ? 'SELECTED' : ''%> VALUE="<%$SysGroupID{Privileged}%>">&nbsp;&nbsp;  Privileged Users
+<OPTION <%$ARGS{Principal} eq $SysGroupID{Unprivileged} ? 'SELECTED' : ''%> VALUE="<%$SysGroupID{Unprivileged}%>">&nbsp;&nbsp;  Unprivileged Users
 % }
 % if ($IncludePrincipalGroups and !$NoGroups) {
 <OPTION VALUE="">Groups you are a member of:
@@ -63,3 +71,12 @@ $IncludeCurrentUser  => 1
 $NoGroups => 0
 $System => $RT::System
 </%ARGS>
+<%ONCE>
+my @SystemGroups = ( 'Everyone', 'Privileged', 'Unprivileged' );
+my %SysGroupID;
+foreach ( @SystemGroups ) {
+    my $group = RT::Group->new( $RT::SystemUser );
+    $group->LoadSystemInternalGroup( $_ );
+    $SysGroupID{ $_ } = $group->PrincipalId();
+}
+</%ONCE>

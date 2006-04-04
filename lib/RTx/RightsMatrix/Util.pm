@@ -142,7 +142,7 @@ sub showme {
     return Data::Dumper::Dumper($copy);
 }
 
-=head2 acl_for_object  ( RightName => $Right, ObjectType => $Type, ObjectType => $ObjectId )
+=head2 acl_for_object  ( RightName => $Right, ObjectType => $Type, ObjectId => $ObjectId )
 
 Returns a list of ACEs for a given object and right.
 
@@ -156,6 +156,7 @@ sub acl_for_object_and_right {
     my @acl;
 
     {
+        # get ACEs on the object with the specified right
         my $acl = RT::ACL->new($RT::SystemUser);
         $acl->Limit(FIELD => 'RightName', VALUE => $Right);
         $acl->Limit(FIELD => 'ObjectType', VALUE => $ObjectType);
@@ -166,16 +167,33 @@ sub acl_for_object_and_right {
     $ObjectType =~ /(.*)::.*$/;
     my $module = $1;
     if ($Right ne 'SuperUser' and $ObjectType !~ /^RTx?.*::System$/ ) {
+        # get ACEs on System with the specified right
         my $acl = RT::ACL->new($RT::SystemUser);
-        $acl->Limit(FIELD => 'RightName', VALUE => $Right);                                                                                                           $acl->Limit(FIELD => 'ObjectType', VALUE => "${module}::System");
+        $acl->Limit(FIELD => 'RightName', VALUE => $Right);
+        $acl->Limit(FIELD => 'ObjectType', VALUE => "${module}::System");
+        # less than 2 to get around bug where Id of System is 1 or 0
         $acl->Limit(FIELD => 'ObjectId', VALUE => 2, OPERATOR => '<');
         push @acl, @{$acl->ItemsArrayRef};
     }
     
     if ($Right ne 'SuperUser') {
+        # get ACEs on System with the right SuperUser
         my $acl = RT::ACL->new($RT::SystemUser);
         $acl->Limit(FIELD => 'RightName', VALUE => 'SuperUser');
         $acl->Limit(FIELD => 'ObjectType', VALUE => "${module}::System");
+        # less than 2 to get around bug where Id of System is 1 or 0
+        $acl->Limit(FIELD => 'ObjectId', VALUE => 2, OPERATOR => '<');
+        push @acl, @{$acl->ItemsArrayRef};
+    }
+
+    # Because an RT SuperUser is an RTx::AssetTracker SuperUser
+    # (thanks to the EquivObjects assumptions of Principal::HasRight)
+    if ($Right ne 'SuperUser' and $module ne 'RT') {
+        # get ACEs on System with the right SuperUser
+        my $acl = RT::ACL->new($RT::SystemUser);
+        $acl->Limit(FIELD => 'RightName', VALUE => 'SuperUser');
+        $acl->Limit(FIELD => 'ObjectType', VALUE => "RT::System");
+        # less than 2 to get around bug where Id of System is 1 or 0
         $acl->Limit(FIELD => 'ObjectId', VALUE => 2, OPERATOR => '<');
         push @acl, @{$acl->ItemsArrayRef};
     }
@@ -196,8 +214,10 @@ sub acl_for_object_right_and_principal {
     # filter for groups the principal is a member of
     # filter out when group IS the principal. we will test that later with _HasDirectRight
     @acl = grep { 
-              my $ace_principal = RT::Principal->new($RT::SystemUser); $ace_principal->Load($_->PrincipalId);
-              my $group = RT::Group->new($RT::SystemUser); $group->Load($ace_principal->Id);
+              my $ace_principal = RT::Principal->new($RT::SystemUser);
+              $ace_principal->Load($_->PrincipalId);
+              my $group = RT::Group->new($RT::SystemUser);
+              $group->Load($ace_principal->Id);
               $group->HasMemberRecursively($Principal)
               or (
                      $_->PrincipalType ne 'Group'

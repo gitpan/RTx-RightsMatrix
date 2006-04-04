@@ -34,7 +34,10 @@ which contains group: <% $group->Name ? $group->Name : $group->Domain . " " . $g
 
 <%INIT>
 my $object_string;
-if ($ACEObj->ObjectType =~ /^RTx?.*::System$/) {
+if    ($ACEObj->ObjectType =~ /^RTx::AssetTracker::System$/) {
+    $object_string = 'asset tracker wide';
+}
+elsif ($ACEObj->ObjectType =~ /^RTx?.*::System$/) {
     $object_string = 'system wide';
 }
 else {

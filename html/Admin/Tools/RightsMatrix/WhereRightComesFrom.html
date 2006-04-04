@@ -1,4 +1,32 @@
-<h3><% $Principal->IsUser ? loc('User') : loc('Group') %> '<% $Principal->Object->Name ? $Principal->Object->Name : $Principal->Object->Type %>' has right '<%$Right%>' on <%$ObjectType =~ /RTx?.*::(.*)$/ ? $1 : $ObjectType%>: '<%$Object->Name ? $Object->Name : $Object->id %>' the following ways:<p></h3>
+<h3>
+%# <% $Principal->IsUser ? loc('User') : loc('Group') %> '<% $Principal->Object->Name ? $Principal->Object->Name : $Principal->Object->Type %>' has right '<%$Right%>'
+% my $PrincipalObj = $Principal->Object();
+% if ( $Principal->IsUser ) {
+<% loc('User') . $PrincipalObj->Name %>
+% }
+% else {
+%     if ( $PrincipalObj->Name ) {
+<% loc('Group') %> <%$PrincipalObj->Name%>
+%     }
+%     elsif ( $PrincipalObj->Domain =~ /::(.*)-Role$/ ) {
+<% loc('Role') %> <% $PrincipalObj->Type %>
+%     }
+%     else {
+ <%$PrincipalObj->Name ? $PrincipalObj->Name : $PrincipalObj->Type%>
+%     }
+% }
+ has right '<%$Right%>'
+
+% if ( $ObjectType =~ /RT.*::System$/ ) {
+globally
+% }
+% elsif ( $ObjectType =~ /RTx?.*::(.*)$/ ) {
+ on <%$1%> '<%$Object->Name ? $Object->Name : $Object->id %>'
+% }
+% else {
+ on <%$ObjectType%> '<%$Object->Name ? $Object->Name : $Object->id %>'
+% }
+ the following ways:<p></h3>
 
 % foreach my $ace_id (keys %acl_map) {
 <hr>
@@ -10,7 +38,7 @@
 
 # In order to determine how a user, group or role has a right on an object,
 # find all the Access Control Entries of that object and right (and on
-# RT::System for that right and SuperUser.
+# RT::System) for that right and SuperUser.
 
 my $Object = $ObjectType->new($RT::SystemUser);
 $Object->Load($ObjectId);

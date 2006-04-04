@@ -1,5 +1,12 @@
 Changes:
 
+0.03.00:
+
+* Added support for the cusomizable roles in AT 1.2.3.
+* Fixed code that didn't recognize that an RT SuperUser is an AT SuperUser.
+* Fixed bad labeling on some pages and improved description of where
+  rights come from.
+
 0.02.05:
 
 * Fixed user needing ShowConfigTab to access My Rights

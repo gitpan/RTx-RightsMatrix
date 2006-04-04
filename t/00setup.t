@@ -1,7 +1,5 @@
 #!/usr/bin/perl -w
 
-use lib qw(/opt/rt3/local/lib /opt/rt3/lib);
-
 use Test::More tests => 178;
 use strict;
 BEGIN { require "t/utils.pl"; }

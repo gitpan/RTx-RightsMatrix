@@ -1,4 +1,4 @@
-% my $Title = loc("Queue Rights for [_1]: [_2]", $principal->IsUser ? loc('User') : loc('Group'), $principal->Object->Name ? $principal->Object->Name : $principal->Object->Type);
+% my $Title = loc("Asset Rights for [_1]: [_2]", $principal->IsUser ? loc('User') : loc('Group'), $principal->Object->Name ? $principal->Object->Name : $principal->Object->Type);
 <& /Elements/Header, Title=>$Title &>
 <& /Admin/Tools/RightsMatrix/Elements/UserRightsTabs,
     current_tab => 'User/Prefs.html',

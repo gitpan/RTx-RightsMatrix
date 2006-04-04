@@ -242,7 +242,7 @@ my $WhereFrom = sub {
     my @callers = $m->callers();
     my $user_context = ( grep { $_->dir_path() =~ /User/ } @callers ) ? 'User/' : '';
 
-    return    "$RT::WebURL/Admin/Tools/RightsMatrix/${user_context}${ObjectString}RightsMatrix.html?"
+    return    "$RT::WebPath/Admin/Tools/RightsMatrix/${user_context}${ObjectString}RightsMatrix.html?"
             . "WhereFrom=1"
             . "&PrincipalId=" . $args{Principal}->id
             . "&ObjectId="    . $args{Object}->id
